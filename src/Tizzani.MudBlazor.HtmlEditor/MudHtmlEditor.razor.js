@@ -45,6 +45,11 @@ export class MudQuillInterop {
         this.toolbarRef = toolbarRef;
     }
 
+    disableComponent = () => {
+        this.quill.enable(false);
+        return true;
+    }
+
     getText = () => {
         return this.quill.getText();
     };

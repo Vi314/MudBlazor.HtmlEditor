@@ -66,6 +66,16 @@ public sealed partial class MudHtmlEditor : IAsyncDisposable
 
 
     /// <summary>
+    /// Disables editing in the component.
+    /// </summary>
+    [Parameter]
+    public bool Disabled { get; set; } = false;
+
+    [CascadingParameter(Name = "ParentDisabled")]
+    public bool ParentDisabled { get; set; }
+
+
+    /// <summary>
     /// Clears the content of the editor.
     /// </summary>
     public async Task Reset()
@@ -115,7 +125,9 @@ public sealed partial class MudHtmlEditor : IAsyncDisposable
 
             await using var module = await JS.InvokeAsync<IJSObjectReference>("import", "./_content/Tizzani.MudBlazor.HtmlEditor/MudHtmlEditor.razor.js");
             _quill = await module.InvokeAsync<IJSObjectReference>("createQuillInterop", _dotNetRef, _editor, _toolbar, Placeholder);
-
+            if(Disabled || ParentDisabled) {
+                await _quill.InvokeAsync<bool>("disableComponent");
+            }
             await SetHtml(Html);
 
             StateHasChanged();
